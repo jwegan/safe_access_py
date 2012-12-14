@@ -3,6 +3,7 @@ safe_access_py
 
 Drill down into any python object without having to worry about AttributeErrors, KeyErrors, or IndexErrors
 
+	```python
 	from safe_access import safe_access
 	class A(object):
 	  pass
@@ -22,3 +23,4 @@ Drill down into any python object without having to worry about AttributeErrors,
 	# Access non-existant attribute
 	print safe_access(path='a.bad_attribute',  base_obj=a)
 	# returns None
+	```
