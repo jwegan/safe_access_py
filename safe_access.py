@@ -1,5 +1,4 @@
 import ast
-import itertools
 
 
 def safe_access(path, base_obj, default_value=None):
@@ -44,7 +43,7 @@ def _pop_from_path(remaining_path):
     return None, None
 
   end_index = len(remaining_path)
-  for index, c in enumerate(itertools.islice(remaining_path, 1, len(remaining_path))):
+  for index, c in enumerate(remaining_path[1:]):
     if c == '.' or c == '[':
       end_index = index + 1
       break
