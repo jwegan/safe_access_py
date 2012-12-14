@@ -7,7 +7,7 @@ def safe_access(path, base_obj, default_value=None):
 
   Keywords arguments:
   path -- a string representing the python expression to access the value you want.
-          ex: "a.b[12]["dict_key"].value_i_want
+          ex: "a.b[12]["dict_key"].value_i_want"
   base_obj -- the base object from which to start drilling down. From the example above,
               this would be a.
   default_value -- the value to return if the path could not be fully traversed
