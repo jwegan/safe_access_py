@@ -1,16 +1,18 @@
 import ast
 
 
-def safe_access(path, base_obj, default_value=None):
+def safe_access(base_obj, path, default_value=None, **kwargs):
   """Drill down into an object without having to worry about AttributeErrors,
   KeyErrors, or IndexErrors.
 
   Keywords arguments:
-  path -- a string representing the python expression to access the value you want.
-          ex: "a.b[12]["dict_key"].value_i_want"
   base_obj -- the base object from which to start drilling down. From the example above,
               this would be a.
+  path -- a string representing the python expression to access the value you want.
+          ex: "a.b[12]["dict_key"].value_i_want"
   default_value -- the value to return if the path could not be fully traversed
+  **kwargs -- variables used as dictionary keys or list indexes in the path expression.
+              ex: myvar would need to be in kwargs if you use path="a.b.[myvar]"
   """
 
   # Strip variable name of base_obj from path
@@ -21,9 +23,9 @@ def safe_access(path, base_obj, default_value=None):
     part, remaining_path = _pop_from_path(remaining_path)
 
     if part[0] == '[' and part[len(part) - 1] == ']':
-      # Note: Need try/except for index access for the same reason python builtin hasattr
-      #       uses try/except for safe attribute access
-      index = ast.literal_eval(part[1:-1])
+      # Determine if key/index is a variable or a literal
+      part = part[1:-1]
+      index = kwargs[part] if part[0].isalpha() else ast.literal_eval(part)
       try:
         cur_obj = cur_obj[index]
       except:

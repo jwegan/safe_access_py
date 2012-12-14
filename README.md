@@ -7,11 +7,7 @@ AttributeErrors, KeyErrors, or IndexErrors.
 
 Limitations:
 
-1) Dictionary keys & list indices must be literals in the strings passed into safe access.
-   If you want to use a variable for a key/index, use string formatting to insert the
-   value of the variable. ex: "mydict['%s']" % key
-
-2) Does not support function calls at this time
+1) Does not support function calls at this time
 
 
 ```python
@@ -25,6 +21,11 @@ a.b["abc"] = ['x', 'y', 'z']
 
 # Access valid path
 print safe_access(path='a.b["abc"][1]',  base_obj=a, default_value=7)
+# returns 'y'
+
+# Access valid path with variable substitution
+myvar = 1
+print safe_access(path='a.b["abc"][myvar]',  base_obj=a, default_value=7, myvar=myvar)
 # returns 'y'
 
 # Access that causes index out of range, but returns default value of 7
