@@ -1,7 +1,7 @@
 safe_access_py
 ==============
 
-Tired of always checking has attr, list lengths, or if a key is in a dictionary? Safe access allows
+Tired of always checking hasattr, len, or if a key is in a dictionary? Safe access allows
 you to safely drill down multiple levels into any python object without having to worry about
 AttributeErrors, KeyErrors, or IndexErrors.
 
