@@ -20,19 +20,19 @@ a.b = dict()
 a.b["abc"] = ['x', 'y', 'z']
 
 # Access valid path
-print safe_access(path='a.b["abc"][1]',  base_obj=a, default_value=7)
+print safe_access(base_obj=a, path='a.b["abc"][1]', default_value=7)
 # returns 'y'
 
 # Access valid path with variable substitution
 myvar = 1
-print safe_access(path='a.b["abc"][myvar]',  base_obj=a, default_value=7, myvar=myvar)
+print safe_access(base_obj=a, path='a.b["abc"][myvar]', default_value=7, myvar=myvar)
 # returns 'y'
 
 # Access that causes index out of range, but returns default value of 7
-print safe_access(path='a.b["abc"][404]',  base_obj=a, default_value=7)
+print safe_access(base_obj=a, path='a.b["abc"][404]', default_value=7)
 # returns 7
 
 # Access non-existant attribute
-print safe_access(path='a.bad_attribute',  base_obj=a)
+print safe_access(base_obj=a, path='a.bad_attribute')
 # returns None
 ```
