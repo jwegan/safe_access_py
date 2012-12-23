@@ -13,10 +13,17 @@ class SafeAccessTestCase(unittest.TestCase):
     self.a = A()
     self.a.b = dict()
     self.a.b["abc"] = ['x', 'y', 'z']
+    a2 = A()
+    a2.val = 99
+    self.a.b["['.']"] = a2
 
   def test_access_value(self):
     ret = safe_access(base_obj=self.a, path='a.b["abc"][1]', default_value=7)
     self.assertEquals('y', ret)
+
+  def test_key_with_control_characters(self):
+    ret = safe_access(base_obj=self.a, path="""a.b["['.']"].val""")
+    self.assertEquals(99, ret)
 
   def test_default_value_works(self):
     ret = safe_access(base_obj=self.a, path='a.b["abc"][404]', default_value=7)
