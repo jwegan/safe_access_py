@@ -66,4 +66,7 @@ def _pop_from_path(remaining_path):
     elif not str_terminator and (c == '.' or c == '['):
       end_index = index + 1
       break
+
+  if str_terminator:
+    raise Exception("Invalid path specification: end quote not found")
   return remaining_path[:end_index], remaining_path[end_index:]
