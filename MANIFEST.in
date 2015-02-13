@@ -1,0 +1,7 @@
+recursive-include safe_access *.py
+recursive-include tests *.py
+include *
+global-exclude .DS_Store
+global-exclude *.swp
+exclude .gitignore
+prune .git
