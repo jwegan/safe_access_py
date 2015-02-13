@@ -29,27 +29,67 @@ def safe_access(base_obj, path, default_value=None, **kwargs):
 
   # Strip variable name of base_obj from path
   _, remaining_path = _pop_from_path(path)
-  cur_obj = base_obj
+  current_objects = [base_obj]
+  used_wildcard = False
 
-  while remaining_path:
-    part, remaining_path = _pop_from_path(remaining_path)
+  while remaining_path and current_objects:
+    raw_part, remaining_path = _pop_from_path(remaining_path)
+    prev_objects = current_objects
+    current_objects = list()
 
-    if part[0] == '[' and part[len(part) - 1] == ']':
-      # Determine if key/index is a variable or a literal
-      part = part[1:-1]
-      index = kwargs[part] if part[0].isalpha() else ast.literal_eval(part)
-      try:
-        cur_obj = cur_obj[index]
-      except:
-        return default_value
-    elif part[0] == '.':
-      attr_name = part[1:]
-      if not hasattr(cur_obj, attr_name):
-        return default_value
-      cur_obj = getattr(cur_obj, attr_name)
-    else:
-      raise Exception("Invalid path specification")
-  return cur_obj
+    for obj in prev_objects:
+      # Handle square brackets accessor
+      if raw_part[0] == '[' and raw_part[len(raw_part) - 1] == ']':
+        part = raw_part[1:-1]
+        used_wildcard = used_wildcard or (part[0] == '*' and len(part) == 1)
+        tmp_objects = list()
+
+        # Deal with non-wildcard case
+        if part[0] != '*' or len(part) > 1:
+          key = kwargs[part] if part[0].isalpha() else ast.literal_eval(part)
+          try:
+            tmp_objects.append(obj[key])
+          except:
+            continue
+
+        # Deal with wildcard cases
+        # First try sequence protocol because iterating over a list of ints
+        # can throw off the map protocol
+        if not tmp_objects:
+          try:
+            for index in xrange(len(obj)):
+              tmp_objects.append(obj[index])
+          except:
+            tmp_objects = list()
+
+        # Then try map protocol
+        if not tmp_objects:
+          try:
+            for key in obj:
+              tmp_objects.append(obj[key])
+          except:
+            tmp_objects = list()
+        current_objects.extend(tmp_objects)
+
+      # Handle dot accessor
+      elif raw_part[0] == '.':
+        part = raw_part[1:]
+        used_wildcard = used_wildcard or (part[0] == '*' and len(part) == 1)
+        for attr in ([part] if part != '*' else [a for a in dir(obj) if not a.startswith("__")]):
+          if hasattr(obj, attr):
+            current_objects.append(getattr(obj, attr))
+
+      # Else unknown acessor
+      else:
+        raise Exception("Invalid path specification near: %s" % part)
+
+  # Return list if wildcard used, otherwise return the value
+  if not current_objects:
+    return default_value
+  elif current_objects and used_wildcard:
+    return current_objects
+  else:
+    return current_objects[0]
 
 
 def _pop_from_path(remaining_path):
