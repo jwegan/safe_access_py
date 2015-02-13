@@ -8,7 +8,9 @@ AttributeErrors, KeyErrors, or IndexErrors. Oh, and it supports wildcards.
 Limitations:
 
 1) Does not support function calls at this time
+
 2) Does not support escaped quotations
+
 3) Does not support variable references withing tuple literals
 
 
