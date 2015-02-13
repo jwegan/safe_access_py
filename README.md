@@ -38,6 +38,6 @@ print safe_access(a, 'a.bad_attribute')
 # returns None
 
 # Access wildcard
-print safe_access(a, 'a[*][0]')
+print safe_access(a, 'a.b[*][0]')
 # returns ['x', 1]
 ```
