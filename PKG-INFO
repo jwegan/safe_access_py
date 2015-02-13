@@ -1,27 +1,25 @@
 Metadata-Version: 1.1
 Name: safe_access
-Version: 1.0
+Version: 1.1
 Summary: Tool to make drilling into Python objects easy & painless
 Home-page: https://github.com/jwegan/safe_access_py
 Author: John Egan
 Author-email: me@jwegan.com
 License: MPL 2.0
-Description: Safe Access
+Description: 
+        Safe Access
         ==============
         
         Tired of always checking hasattr, len, or if a key is in a dictionary? safe_access allows
         you to safely drill down multiple levels into any python object without having to worry about
         AttributeErrors, KeyErrors, or IndexErrors. Oh, and it supports wildcards.
         
-        Limitations:
         
-        \1. Does not support function calls at this time
-        \2. Does not support escaped quotations
-        \3. Does not support variable references withing tuple literals
+        *Available on pypi*: https://pypi.python.org/pypi/safe_access
         
         
-        ```python
-        import safe_access
+        python
+        from safe_access import safe_access
         class A(object):
           pass
         
@@ -46,10 +44,18 @@ Description: Safe Access
         # returns None
         
         # Access wildcard
-        print safe_access(a, 'a[*][0]')
+        print safe_access(a, 'a.b[*][0]')
         # returns ['x', 1]
-        ```
         
+        
+        
+        Limitations:
+        
+        \1. Does not support function calls at this time
+        
+        \2. Does not support escaped quotations
+        
+        \3. Does not support variable references withing tuple literals
 Platform: UNKNOWN
 Classifier: Development Status :: 3 - Alpha
 Classifier: Intended Audience :: Developers

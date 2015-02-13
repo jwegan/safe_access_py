@@ -12,7 +12,7 @@
 
 import unittest
 
-import safe_access
+from safe_access import safe_access
 
 
 class SafeAccessTestCase(unittest.TestCase):

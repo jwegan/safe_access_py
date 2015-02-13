@@ -40,7 +40,7 @@ def markdown_to_reST(text):
 
 setup(
     name='safe_access',
-    version='1.0',
+    version='1.1',
     description='Tool to make drilling into Python objects easy & painless',
     long_description=markdown_to_reST(open("README.md").read()),
     license='MPL 2.0',

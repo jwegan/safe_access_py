@@ -10,7 +10,7 @@ AttributeErrors, KeyErrors, or IndexErrors. Oh, and it supports wildcards.
 
 
 ```python
-import safe_access
+from safe_access import safe_access
 class A(object):
   pass
 
