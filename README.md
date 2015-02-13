@@ -5,13 +5,8 @@ Tired of always checking hasattr, len, or if a key is in a dictionary? safe_acce
 you to safely drill down multiple levels into any python object without having to worry about
 AttributeErrors, KeyErrors, or IndexErrors. Oh, and it supports wildcards.
 
-Limitations:
 
-1) Does not support function calls at this time
-
-2) Does not support escaped quotations
-
-3) Does not support variable references withing tuple literals
+*Available on pypi*: [https://pypi.python.org/pypi/safe_access](https://pypi.python.org/pypi/safe_access)
 
 
 ```python
@@ -43,3 +38,12 @@ print safe_access(a, 'a.bad_attribute')
 print safe_access(a, 'a.b[*][0]')
 # returns ['x', 1]
 ```
+
+
+Limitations:
+
+1) Does not support function calls at this time
+
+2) Does not support escaped quotations
+
+3) Does not support variable references withing tuple literals

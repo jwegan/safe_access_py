@@ -30,7 +30,13 @@ def markdown_to_reST(text):
     text = re.sub(pattern=r"\n(\d+). ",
                   repl=r"\n\\\g<1>. ",
                   string=text)
-    return text
+
+    # Strip ```
+    text = re.sub(pattern=r"```",
+                  repl=r"",
+                  string=text)
+    return "\n" + text
+
 
 setup(
     name='safe_access',
