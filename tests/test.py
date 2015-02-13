@@ -74,6 +74,10 @@ class SafeAccessTestCase(unittest.TestCase):
         ret = safe_access(base_obj=self.a, path='a.b["abc"][*]')
         self.assertEquals(set(['x', 'y', 'z']), set(ret))
 
+    def test_multiple_wildcards(self):
+        ret = safe_access(base_obj=self.a, path='a.*[*][0]')
+        self.assertEquals(ret, ['x'])
+
 
 if __name__ == '__main__':
     unittest.main()

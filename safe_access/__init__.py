@@ -21,24 +21,24 @@ def safe_access(base_obj, path, default_value=None, **kwargs):
     """Drill down into an object without having to worry about AttributeErrors,
     KeyErrors, or IndexErrors.
 
-    Keywords arguments:
-    base_obj -- the base object from which to start drilling down. From the example above,
-                            this would be a.
-    path -- a string representing the python expression to access the value you want.
-                    ex: "a.b[12]['dict_key'].value_i_want"
-    default_value -- the value to return if the path could not be fully traversed
-    **kwargs -- variables used as dictionary keys or list indexes in the path expression.
-                            ex: myvar would need to be in kwargs if you use path="a.b.[myvar]"
-
     Notes: Dictionary keys or list indexes must be one of the following.
         1) String - the first character after the left square bracket should be a quote.
-            Triple quotes, and escaping quotes is not supported. (i.e. a['abc\'def'] will not work)
+             Triple quotes, and escaping quotes is not supported. (i.e. a['abc\'def'] will not work)
         2) Variable - can be passed in as keyword args and then referenced in path.
-            ex: a.b.[myvar] where myvar is passed in as a kwarg
+             ex: a.b[myvar] where myvar is passed in as a kwarg
         3) Literal - any python literal including tuples, or None. Variable references within
-            a literal are not supported.
+             a literal are not supported.
         4) Wildcards - * will search all keys/items and return a list of all objects safe_access was able to
-            succesfully drill down into.
+             succesfully drill down into. Can also have wildcards for attributes as well. Multiple wildcards are ok.
+
+    Arguments:
+        ``base_obj`` - The base object from which to start drilling down. For the path 'a.b[2]'
+                       this would be a.
+        ``path`` - a string representing the python expression to access the value you want.
+                   ex: "a.b[12]['dict_key'].value_i_want"
+        ``default_value`` - the value to return if the path could not be fully traversed
+        ``**kwargs`` - variables used as dictionary keys or list indexes in the path expression.
+                       ex: myvar would need to be in kwargs if you use path="a.b.[myvar]"
     """
 
     # Strip variable name of base_obj from path
@@ -55,40 +55,36 @@ def safe_access(base_obj, path, default_value=None, **kwargs):
             # Handle square brackets accessor
             if raw_part[0] == '[' and raw_part[-1] == ']':
                 part = raw_part[1:-1]
-                used_wildcard = used_wildcard or (part[0] == '*' and len(part) == 1)
+                used_wildcard = used_wildcard or (part == '*')
                 tmp_objects = list()
 
                 # Deal with non-wildcard case
-                if part[0] != '*' or len(part) > 1:
+                if part != '*':
                     key = kwargs[part] if part[0].isalpha() else ast.literal_eval(part)
                     try:
-                        tmp_objects.append(obj[key])
+                        tmp_objects = [obj[key]]
                     except:
-                        continue
+                        pass
 
                 # Deal with wildcard cases
-                # First try sequence protocol because iterating over a list of ints
-                # can throw off the map protocol
-                if not tmp_objects:
+                else:
+                    # First try the sequence protocol
                     try:
-                        for index in xrange(len(obj)):
-                            tmp_objects.append(obj[index])
+                        tmp_objects = [obj[index] for index in xrange(len(obj))]
                     except:
-                        tmp_objects = list()
+                        pass
 
-                # Then try map protocol
-                if not tmp_objects:
+                    # Then try the map protocol
                     try:
-                        for key in obj:
-                            tmp_objects.append(obj[key])
+                        tmp_objects = tmp_objects or [obj[key] for key in obj]
                     except:
-                        tmp_objects = list()
+                        pass
                 current_objects.extend(tmp_objects)
 
             # Handle dot accessor
             elif raw_part[0] == '.':
                 part = raw_part[1:]
-                used_wildcard = used_wildcard or (part[0] == '*' and len(part) == 1)
+                used_wildcard = used_wildcard or (part == '*')
                 for attr in ([part] if part != '*' else [a for a in dir(obj) if not a.startswith("__")]):
                     if hasattr(obj, attr):
                         current_objects.append(getattr(obj, attr))
